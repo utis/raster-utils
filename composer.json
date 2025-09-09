@@ -1,0 +1,25 @@
+{
+  "name": "oliver-utis/gtypo",
+  "type": "grav-plugin",
+  "description": "Grid based typography.",
+  "version": "1.0.0",
+  "keywords": ["plugin"],
+  "homepage": "https://github.com/oliver-utis/grav-plugin-gtypo",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Oliver Utis",
+      "email": "oliver.utis@denkbar-ffm.de",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=7.1.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "Grav\\Plugin\\Gtypo\\": "classes/"
+    },
+    "classmap":  ["gtypo.php"]
+  }
+}
