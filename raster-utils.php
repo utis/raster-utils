@@ -12,10 +12,10 @@ define("FACEPREFIX", "font-");
 define("YEXTENSION", "yaml");
 
 /**
- * Class GtypoPlugin
+ * Class RasterUtilsPlugin
  * @package Grav\Plugin
  */
-class GtypoPlugin extends Plugin
+class RasterUtilsPlugin extends Plugin
 {
     public $gridCfg = false;
     public $face = false;
