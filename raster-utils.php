@@ -97,7 +97,7 @@ class RasterUtilsPlugin extends Plugin
         // one.
         $r = false;
         foreach ($cfgs as $name => $spec) {
-            if ($name === 'default') {
+            if ($spec['default']) {
                 $r = $spec;
                 $spec['name'] = $name;
                 break;
