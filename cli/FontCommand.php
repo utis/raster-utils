@@ -34,15 +34,15 @@ class FontCommand extends ConsoleCommand
             ->setDescription("Output sass code for a font to stdin.")
             ->addArgument(
                 'name',
-                InputArgument::REQUIRED,
+                InputArgument::OPTIONAL,
                 'The name of the font spec file without extension.'
             )
-            // ->addOption(
-            //     'yell',
-            //     'y',
-            //     InputOption::VALUE_NONE,
-            //     'Wheter the greetings should be yelled or quieter'
-            // )
+            ->addOption(
+                'list',
+                'l',
+                InputOption::VALUE_NONE,
+                'Wheter the greetings should be yelled or quieter'
+            )
             ->setHelp('The <info>font</info> outputs sass code.')
         ;
     }
@@ -55,7 +55,7 @@ class FontCommand extends ConsoleCommand
         // Collects the arguments and options as defined
         $this->options = [
             'name' => $this->input->getArgument('name'),
-            // 'yell' => $this->input->getOption('yell')
+            'list' => $this->input->getOption('list')
         ];
 
         $grav = Grav::instance();
@@ -67,11 +67,14 @@ class FontCommand extends ConsoleCommand
         $themeDir = $grav['locator']->findResource('theme://', false);
         $fontsDir = $themeDir . '/' . $themeCfg['typography']['dir'];
 
-        $name = $this->options['name'];
+        if ($this->options['list']) {
+            $out = implode(" ", $themeCfg['typography']['faces']);
+        } else {
+                $name = $this->options['name'];
+                $out = $this->generate_fontface_decl($fontsDir, $name);
+        }
 
-        $sass = $this->generate_fontface_decl($fontsDir, $name);
-
-        $this->output->writeln($sass);
+        $this->output->writeln($out);
     }
 
 
