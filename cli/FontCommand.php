@@ -77,7 +77,7 @@ class FontCommand extends ConsoleCommand
 
     // Generate the @fontface declaration and preface it with a
     // sass variable specifying necessary information.
-    public function generate_fontface_decl ($dir, $name) {
+    protected function generate_fontface_decl ($dir, $name) {
         $ff_filename = $dir . '/' . $name . '/' . FONTFACE_PREFIX . $name . SASS_EXT;
         $spec_filename = $dir . '/' . $name . YAML_EXT;
 
@@ -95,7 +95,7 @@ class FontCommand extends ConsoleCommand
     }
 
     // Generate necessary font specs as a sass alist.
-    public function fontspec_to_sass($spec_file) {
+    protected function fontspec_to_sass($spec_file) {
         if (!file_exists($spec_file))
             throw new \Exception('No such file: ' . $spec_file);     
 
