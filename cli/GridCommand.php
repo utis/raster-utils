@@ -10,7 +10,7 @@ use Grav\Common\Grav;
 // define("FONTFACE_PREFIX", "_font-");
 // define("SASS_EXT", ".scss");
 // define("YAML_EXT", ".yaml");
-
+define("RPLUGIN_NAME", "raster-utils");
 
 /**
  * Class FontCommand
@@ -31,15 +31,15 @@ class gridCommand extends ConsoleCommand
             ->setDescription("Output sass code for a font to stdin.")
             ->addArgument(
                 'name',
-                InputArgument::REQUIRED,
+                InputArgument::OPTIONAL,
                 'The name of the font spec file without extension.'
             )
-            // ->addOption(
-            //     'yell',
-            //     'y',
-            //     InputOption::VALUE_NONE,
-            //     'Wheter the greetings should be yelled or quieter'
-            // )
+            ->addOption(
+                'list',
+                'l',
+                InputOption::VALUE_NONE,
+                'Wheter the greetings should be yelled or quieter'
+            )
             ->setHelp('The <info>font</info> outputs sass code.')
         ;
     }
@@ -52,7 +52,7 @@ class gridCommand extends ConsoleCommand
         // Collects the arguments and options as defined
         $this->options = [
             'name' => $this->input->getArgument('name'),
-            // 'yell' => $this->input->getOption('yell')
+            'list' => $this->input->getOption('list')
         ];
 
         $grav = Grav::instance();
@@ -60,19 +60,37 @@ class gridCommand extends ConsoleCommand
         $grav['config']->init();
         $grav['themes']->init();
 
+        // var_dump("HeLLO");
+        // var_dump($grav['config']['plugins']);
+
         $typo_cfg = $grav['config']['theme']['typography'];
         // $themeDir = $grav['locator']->findResource('theme://', false);
         // $fontsDir = $themeDir . '/' . $themeCfg['typography']['dir'];
         // $sass = $themeDir . '/' . $fontsDir;
 
-        $name = $this->options['name'];
-        $spec = $typo_cfg['grids'][$name];
-        $spec = $this->resolve_spec($spec, $typo_cfg['templates']);
+        if ($this->options['list']) {
+            $r = array();
+            $i = 0;
+            foreach ($typo_cfg['grids'] as $key => $v){
+                $r[$i++] = $key;
+            }
+            $out = implode(' ', $r);
+        } else {
+            $name = $this->options['name'];
+            $spec = $typo_cfg['grids'][$name];
 
-        $out = "@import 'font-${spec['face']}';\n";
+            
+            $plugin_tpls =
+                $grav["config"]->get('plugins.' . RPLUGIN_NAME)['templates'];
+            $theme_tpls = $typo_cfg['templates'];
 
-        $out = $out . "\$grid-${name}: " . $this->generate_grid_decl($spec) . ';';
-        // var_dump($typo_cfg['grids']);
+            $spec = $this->resolve_spec($spec, $theme_tpls, $plugin_tpls);
+            
+            $out = "@import 'font-${spec['face']}';\n";
+            
+            $out = $out . "\$grid-${name}: " . $this->generate_grid_decl($spec) . ';';
+        }
+
         $this->output->writeln($out);
     }
 
@@ -80,10 +98,14 @@ class gridCommand extends ConsoleCommand
     protected $spc_keywords = ['breakpoints', 'root-size', 'font-size',
                                'column-width', 'row-height'];
 
-    protected function resolve_spec($spc, $templates) {
+    protected function resolve_spec($spc, $theme_tpls, $plugin_tpls) {
         $tpl_name = $spc['template'];
         if ($tpl_name) {
-            $tpl = $templates[$tpl_name];
+            $tpl = $theme_tpls[$tpl_name] ?? $plugin_tpls[$tpl_name];
+
+            if(!$tpl)
+                throw new \Exception('No such template: ' . $tpl_name);
+
             foreach ($this->spc_keywords as $k) {
                 $spc[$k] = $spc[$k] ?? $tpl[$k];
             }

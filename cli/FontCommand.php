@@ -67,6 +67,8 @@ class FontCommand extends ConsoleCommand
         $themeDir = $grav['locator']->findResource('theme://', false);
         $fontsDir = $themeDir . '/' . $themeCfg['typography']['dir'];
 
+        // var_dump($themeCfg);
+
         if ($this->options['list']) {
             $out = implode(" ", $themeCfg['typography']['faces']);
         } else {

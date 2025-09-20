@@ -1,2 +1,9 @@
 enabled: true
 text_var: Custom Text added by the **RasterUtils** plugin (disable plugin to remove)
+templates:
+  20-9x6:
+    breakpoints: min 2 3 4 5 6
+    root-size: 20
+    font-size: .8
+    column-width: 9
+    row-height: 6
