@@ -70,7 +70,13 @@ class FontCommand extends ConsoleCommand
         // var_dump($themeCfg);
 
         if ($this->options['list']) {
-            $out = implode(" ", $themeCfg['typography']['faces']);
+
+            if ($themeCfg['typography']['faces']) {
+                $out = "hllo";
+                // $out = implode(" ", $themeCfg['typography']['faces']);
+            } else {
+                $out = "";
+            }
         } else {
                 $name = $this->options['name'];
                 $out = $this->generate_fontface_decl($fontsDir, $name);
